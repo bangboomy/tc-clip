@@ -19,6 +19,7 @@ from datasets.build import build_val_dataloader
 from trainers.build_trainer import returnCLIP
 from utils.tools import init_dist, get_dist_info, set_random_seed
 from utils.logger import create_logger
+from utils.print_utils import colorstr, print_configs
 
 
 def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, logger: logging.Logger):
@@ -40,7 +41,7 @@ def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, 
 
     # Set random seed
     if config.seed is not None:
-        set_random_seed(config.seed + rank, deterministic=config.deterministic)
+        set_random_seed(config.seed+config.rank, use_cudnn=config.use_cudnn)
 
     # Create output directory
     output_path = Path(output_dir)
@@ -48,12 +49,12 @@ def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, 
 
     # Build model
     logger.info("Building model...")
-    class_names = []  # Placeholder for class names, not needed for feature extraction
+    class_names = ["empty",]  # Placeholder for class names, not needed for feature extraction
     model = returnCLIP(config, logger, class_names)
 
     # Load checkpoint
     logger.info(f"Loading checkpoint from {checkpoint_path}...")
-    checkpoint = torch.load(checkpoint_path, map_location='cpu')
+    checkpoint = torch.load(checkpoint_path, map_location='cpu', weights_only=False)
 
     # Handle different checkpoint formats
     if 'model' in checkpoint:
@@ -188,19 +189,28 @@ def main(config: DictConfig) -> None:
         config: Configuration object
     """
     # Set up output directory if not provided
-    if not hasattr(config, 'output_dir'):
-        config.output_dir = f"./features/{config.data.val.dataset_name}"
+    if not hasattr(config, 'output'):
+        config.output = f"./features/{config.data.val.dataset_name}"
 
     # Create logger
-    logger = create_logger(output_dir=config.output_dir, rank=0)
+    logger = create_logger(output_dir=config.output, dist_rank=0)
     logger.info(f"Config:\n{OmegaConf.to_yaml(config)}")
 
+    config.rank, config.world_size = get_dist_info()
+    config.num_gpus = config.world_size
+    if config.num_gpus == 1:
+        logger.info(colorstr('Single GPU'))
+        config.distributed = False
+    else:
+        logger.info(colorstr('DDP')+f' with {config.num_gpus} GPUs')
+        config.distributed = True
+
     # Extract checkpoint path if not provided
-    if not hasattr(config, 'checkpoint_path') or config.checkpoint_path is None:
+    if not hasattr(config, 'resume') or config.resume is None:
         raise ValueError("checkpoint_path must be provided in the config")
 
     # Extract features
-    extract_features(config, config.checkpoint_path, config.output_dir, logger)
+    extract_features(config, config.resume, config.output, logger)
 
 
 if __name__ == "__main__":
