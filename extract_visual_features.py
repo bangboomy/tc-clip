@@ -22,7 +22,7 @@ from utils.logger import create_logger
 from utils.print_utils import colorstr, print_configs
 
 
-def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, logger: logging.Logger):
+def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, logger: logging.Logger, extract_train: bool = False):
     """
     Extract visual features from videos using TC-CLIP model.
 
@@ -31,13 +31,14 @@ def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, 
         checkpoint_path: Path to the model checkpoint
         output_dir: Directory to save extracted features
         logger: Logger instance
+        extract_train: Whether to extract features from training data instead of validation data
     """
     # Initialize distributed training
     if config.distributed:
-        init_dist(config.launcher)
-        rank, world_size = get_dist_info()
+        init_dist()
+        config.rank, config.world_size = get_dist_info()
     else:
-        rank, world_size = 0, 1
+        config.rank, config.world_size = 0, 1
 
     # Set random seed
     if config.seed is not None:
@@ -70,7 +71,13 @@ def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, 
 
     # Build dataloader
     logger.info("Building dataloader...")
-    val_data, val_loader, _ = build_val_dataloader(logger, config, config.data.val)
+    if extract_train:
+        from datasets.build import build_train_dataloader
+        data, data_loader, _ = build_train_dataloader(logger, config)
+        data_type = "train"
+    else:
+        data, data_loader, _ = build_val_dataloader(logger, config, config.data.val)
+        data_type = "val"
 
     # Extract features
     logger.info("Extracting features...")
@@ -79,14 +86,14 @@ def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, 
     all_filenames = []
 
     with torch.no_grad():
-        for batch_idx, batch in enumerate(tqdm(val_loader, disable=rank != 0)):
+        for batch_idx, batch in enumerate(tqdm(data_loader, disable=config.rank != 0)):
             images = batch['imgs'].cuda(non_blocking=True)
             labels = batch['label']
 
             # Get features from vision encoder
             cls_tokens, context_tokens, _, _ = model.image_encoder(
                 images,
-                return_layer_num=[-1],  # Get final layer
+                return_layer_num=[11],  # Get final layer
                 return_attention=False,
                 return_source=False
             )
@@ -108,7 +115,7 @@ def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, 
     all_labels = torch.cat(all_labels, dim=0)  # [N]
 
     # Save features
-    output_file = output_path / f'features_rank{rank}.pth'
+    output_file = output_path / f'{data_type}_features_rank{config.rank}.pth'
     torch.save({
         'features': all_features,
         'labels': all_labels,
@@ -119,9 +126,9 @@ def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, 
     logger.info(f"Features saved to {output_file}")
 
     # If using distributed training, gather all features
-    if config.distributed and rank == 0:
+    if config.distributed and config.rank == 0:
         logger.info("Gathering features from all processes...")
-        gather_features(output_path, world_size, logger)
+        gather_features(output_path, config.world_size, logger)
 
     return output_file
 
@@ -188,29 +195,26 @@ def main(config: DictConfig) -> None:
     Args:
         config: Configuration object
     """
+    OmegaConf.set_struct(config, False)
+    
+    # Determine if extracting training data features
+    extract_train = getattr(config, 'extract_train', False)
+    
     # Set up output directory if not provided
     if not hasattr(config, 'output'):
-        config.output = f"./features/{config.data.val.dataset_name}"
+        dataset_name = config.data.train.dataset_name if extract_train else config.data.val.dataset_name
+        config.output = f"./features/{dataset_name}"
 
     # Create logger
     logger = create_logger(output_dir=config.output, dist_rank=0)
     logger.info(f"Config:\n{OmegaConf.to_yaml(config)}")
-
-    config.rank, config.world_size = get_dist_info()
-    config.num_gpus = config.world_size
-    if config.num_gpus == 1:
-        logger.info(colorstr('Single GPU'))
-        config.distributed = False
-    else:
-        logger.info(colorstr('DDP')+f' with {config.num_gpus} GPUs')
-        config.distributed = True
 
     # Extract checkpoint path if not provided
     if not hasattr(config, 'resume') or config.resume is None:
         raise ValueError("checkpoint_path must be provided in the config")
 
     # Extract features
-    extract_features(config, config.resume, config.output, logger)
+    extract_features(config, config.resume, config.output, logger, extract_train=extract_train)
 
 
 if __name__ == "__main__":
