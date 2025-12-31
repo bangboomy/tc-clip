@@ -124,7 +124,7 @@ def validate_with_features(val_loader, model, logger, config, features_path):
                                                     tokenized_prompts=tokenized_prompts)
             text_features = text_features / text_features.norm(dim=-1, keepdim=True)
 
-            logit_scale = logit_scale.to(model_dtype)
+            logit_scale = model.module.logit_scale.exp().to(model_dtype)
             view_features_mean = view_features_mean.to(model_dtype)
             text_features = text_features.to(model_dtype)
             # 计算logits

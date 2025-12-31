@@ -1,4 +1,4 @@
-# TC-CLIP eval example with 4 V100 gpus using pre-extracted features
+# ViFi-CLIP eval example with 4 V100 gpus using pre-extracted features
 export CUDA_VISIBLE_DEVICES=0
 export GPUS_PER_NODE=1
 
