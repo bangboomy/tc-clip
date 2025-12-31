@@ -41,9 +41,15 @@ def validate_with_features(val_loader, model, logger, config, features_path):
     pre_extracted_features = pre_extracted_features.cuda()
     pre_extracted_labels = pre_extracted_labels.cuda()
 
-    # 如果模型使用半精度，将特征转换为半精度
+    # 确保特征类型与模型权重类型一致
+    model_dtype = next(model.parameters()).dtype
     if hasattr(config, 'opt_level') and config.opt_level != 'O0':
         pre_extracted_features = pre_extracted_features.half()
+    else:
+        pre_extracted_features = pre_extracted_features.float()
+
+    # 确保特征类型与模型权重类型一致
+    pre_extracted_features = pre_extracted_features.to(model_dtype)
 
     # 创建索引映射（如果有文件名）
     if 'filenames' in features_data and features_data['filenames'] is not None:
@@ -59,6 +65,9 @@ def validate_with_features(val_loader, model, logger, config, features_path):
         dataset_to_feature_idx = list(range(min(len(pre_extracted_features), len(val_loader.dataset))))
 
     logger.info(f"{config.num_clip * config.num_crop} views inference with pre-extracted features")
+
+    # 获取模型权重数据类型，确保在循环内部可访问
+    model_dtype = next(model.parameters()).dtype
 
     # 处理每个批次
     batch_idx = 0
@@ -106,25 +115,19 @@ def validate_with_features(val_loader, model, logger, config, features_path):
             # 归一化特征
             view_features_mean = view_features_mean / view_features_mean.norm(dim=-1, keepdim=True)
 
-            # 使用模型进行分类（跳过图像编码器）
-            # 我们需要修改模型的前向传播，使其接受预提取的特征
-            # 这里我们直接使用模型的文本编码器部分
+            # 使用ViFi-CLIP的方式处理特征
             tokenized_prompts = model.module.tokenized_prompts  # (num_classes, token_len)
             logit_scale = model.module.logit_scale.exp()
             prompts = model.module.prompt_learner()
 
-            # 对每个样本计算文本特征
-            logits = []
-            for i in range(b):  # batch iteration
-                # 使用预提取的特征作为上下文令牌
-                context_tokens = view_features_mean[i:i+1].unsqueeze(0)  # [1, 1, d]
-                text_features = model.module.text_encoder(prompts=prompts,
-                                                        tokenized_prompts=tokenized_prompts,)
-                                                        # im_features=context_tokens)
-                text_features = text_features / text_features.norm(dim=-1, keepdim=True)
-                l_i = logit_scale * view_features_mean[i] @ text_features.t()
-                logits.append(l_i)
-            logits = torch.stack(logits)  # [b, n_cls]
+            # 使用ViFi-CLIP的文本编码器处理文本特征
+            text_features = model.module.text_encoder(prompts=prompts,
+                                                    tokenized_prompts=tokenized_prompts)
+            text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+
+            view_features_mean = view_features_mean.type(model_dtype)
+            # 计算logits
+            logits = logit_scale * view_features_mean @ text_features.t()  # [b, n_cls]
 
             similarity = logits.softmax(dim=-1)
             tot_similarity += similarity
