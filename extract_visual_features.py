@@ -91,10 +91,9 @@ def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, 
             labels = batch['label']
 
             # Get features from vision encoder (ViFi-CLIP style)
-            # Ensure the input type matches the model weight type
-            model_dtype = next(model.image_encoder.parameters()).dtype
+            # Use full precision (fp32) for feature extraction
             image_features, _ = model.image_encoder(
-                images.type(model_dtype),
+                images.float(),
                 return_attention=False
             )
 

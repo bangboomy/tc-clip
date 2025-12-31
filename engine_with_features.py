@@ -41,15 +41,8 @@ def validate_with_features(val_loader, model, logger, config, features_path):
     pre_extracted_features = pre_extracted_features.cuda()
     pre_extracted_labels = pre_extracted_labels.cuda()
 
-    # 确保特征类型与模型权重类型一致
-    model_dtype = next(model.parameters()).dtype
-    if hasattr(config, 'opt_level') and config.opt_level != 'O0':
-        pre_extracted_features = pre_extracted_features.half()
-    else:
-        pre_extracted_features = pre_extracted_features.float()
-
-    # 确保特征类型与模型权重类型一致
-    pre_extracted_features = pre_extracted_features.to(model_dtype)
+    # 使用全精度(fp32)进行推理测试
+    pre_extracted_features = pre_extracted_features.float()
 
     # 创建索引映射（如果有文件名）
     if 'filenames' in features_data and features_data['filenames'] is not None:
@@ -124,9 +117,9 @@ def validate_with_features(val_loader, model, logger, config, features_path):
                                                     tokenized_prompts=tokenized_prompts)
             text_features = text_features / text_features.norm(dim=-1, keepdim=True)
 
-            logit_scale = model.module.logit_scale.exp().to(model_dtype)
-            view_features_mean = view_features_mean.to(model_dtype)
-            text_features = text_features.to(model_dtype)
+            # 使用全精度(fp32)进行推理
+            logit_scale = model.module.logit_scale.exp()
+            view_features_mean = view_features_mean.float()
             # 计算logits
             logits = logit_scale * view_features_mean @ text_features.t()  # [b, n_cls]
 
