@@ -112,25 +112,21 @@ def validate_with_features(val_loader, model, logger, config, features_path):
             else:  # [b, d]
                 view_features_mean = view_features
 
-            # 确保特征类型与模型权重类型一致
-            view_features_mean = view_features_mean.to(model_dtype)
-
             # 归一化特征
             view_features_mean = view_features_mean / view_features_mean.norm(dim=-1, keepdim=True)
 
             # 使用ViFi-CLIP的方式处理特征
             tokenized_prompts = model.module.tokenized_prompts  # (num_classes, token_len)
-            logit_scale = model.module.logit_scale.exp().to(model_dtype)  # 确保logit_scale类型一致
             prompts = model.module.prompt_learner()
-            # 确保prompts的数据类型与模型权重类型一致
-            prompts = prompts.to(model_dtype)
 
             # 使用ViFi-CLIP的文本编码器处理文本特征
             text_features = model.module.text_encoder(prompts=prompts,
                                                     tokenized_prompts=tokenized_prompts)
             text_features = text_features / text_features.norm(dim=-1, keepdim=True)
 
-            view_features_mean = view_features_mean.type(model_dtype)
+            logit_scale = logit_scale.to(model_dtype)
+            view_features_mean = view_features_mean.to(model_dtype)
+            text_features = text_features.to(model_dtype)
             # 计算logits
             logits = logit_scale * view_features_mean @ text_features.t()  # [b, n_cls]
 
