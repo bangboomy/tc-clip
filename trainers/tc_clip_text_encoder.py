@@ -133,6 +133,8 @@ class VPTextEncoder(nn.Module):
 
         # x.shape = [batch_size, context_length, transformer.width]
         # take features from the eot embedding (eot_token is the highest number in each sequence)
-        x = x[torch.arange(x.shape[0]), tokenized_prompts.argmax(dim=-1)] @ self.text_projection
+        # Ensure text_projection has the same dtype as x
+        text_projection = self.text_projection.type(self.dtype)
+        x = x[torch.arange(x.shape[0]), tokenized_prompts.argmax(dim=-1)] @ text_projection
 
         return x

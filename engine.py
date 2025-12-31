@@ -3,7 +3,7 @@ reference: https://github.com/muzairkhattak/ViFi-CLIP/blob/main/main.py
 """
 
 import wandb
-from apex import amp
+from torch.amp import autocast, GradScaler
 import torch
 import torch.distributed as dist
 
@@ -14,6 +14,7 @@ from utils.logger import MetricLogger, SmoothedValue
 def train_one_epoch(epoch, model, criterion, optimizer, lr_scheduler, train_loader, logger, config, mixup_fn):
     model.train()
     optimizer.zero_grad()
+    scaler = GradScaler() if config.opt_level != 'O0' else None
 
     num_steps = len(train_loader)
     metric_logger = MetricLogger(delimiter="  ")
@@ -31,25 +32,33 @@ def train_one_epoch(epoch, model, criterion, optimizer, lr_scheduler, train_load
             images, label_id = mixup_fn(images, label_id)   # label_id [b] -> [b, num_class]
 
         # forward
-        output = model(images)
-        total_loss = criterion(output["logits"], label_id)
+        with autocast('cuda', enabled=(config.opt_level != 'O0')):
+            output = model(images)
+            total_loss = criterion(output["logits"], label_id)
         total_loss_divided = total_loss / config.accumulation_steps
 
         # backward
         if config.accumulation_steps == 1:
             optimizer.zero_grad()
-        if config.opt_level != 'O0':
-            with amp.scale_loss(total_loss_divided, optimizer) as scaled_loss:
-                scaled_loss.backward()
+        if scaler is not None:
+            scaler.scale(total_loss_divided).backward()
         else:
             total_loss_divided.backward()
         if config.accumulation_steps > 1:
             if (idx + 1) % config.accumulation_steps == 0:
-                optimizer.step()
+                if scaler is not None:
+                    scaler.step(optimizer)
+                    scaler.update()
+                else:
+                    optimizer.step()
                 optimizer.zero_grad()
                 lr_scheduler.step_update(epoch * num_steps + idx)
         else:
-            optimizer.step()
+            if scaler is not None:
+                scaler.step(optimizer)
+                scaler.update()
+            else:
+                optimizer.step()
             lr_scheduler.step_update(epoch * num_steps + idx)
 
         torch.cuda.synchronize()
@@ -80,6 +89,10 @@ def validate(val_loader, model, logger, config):
     num_classes = len(val_loader.dataset.classes)
     metric_logger = MetricLogger(delimiter="  ")
     header = 'Val:'
+    
+    # 添加类别级别的统计
+    class_correct = torch.zeros(num_classes).cuda()
+    class_total = torch.zeros(num_classes).cuda()
 
     logger.info(f"{config.num_clip * config.num_crop} views inference")
     for idx, batch_data in enumerate(metric_logger.log_every(val_loader, config.print_freq, logger, header)):
@@ -101,8 +114,9 @@ def validate(val_loader, model, logger, config):
             if config.opt_level == 'O2':
                 image_input = image_input.half()
 
-            output = model(image_input)
-            logits = output["logits"]
+            with autocast('cuda', enabled=(config.opt_level != 'O0')):
+                output = model(image_input)
+                logits = output["logits"]
             similarity = logits.view(b, -1).softmax(dim=-1)
             tot_similarity += similarity
 
@@ -110,7 +124,30 @@ def validate(val_loader, model, logger, config):
         acc1, acc5, indices_1, _ = accuracy_top1_top5(tot_similarity, label_id)
         metric_logger.meters['acc1'].update(float(acc1) / b * 100, n=b)
         metric_logger.meters['acc5'].update(float(acc5) / b * 100, n=b)
+        
+        # 更新类别级别的统计
+        correct = (indices_1.squeeze() == label_id)
+        for i in range(b):
+            class_correct[label_id[i]] += correct[i].item()
+            class_total[label_id[i]] += 1
+
 
     metric_logger.synchronize_between_processes()
     logger.info(f' * Acc@1 {metric_logger.acc1.global_avg:.3f} Acc@5 {metric_logger.acc5.global_avg:.3f}')
-    return metric_logger.get_stats()
+
+    # 计算并记录每个类别的准确率
+    class_acc = class_correct / (class_total + 1e-7)
+    class_acc = class_acc.cpu().numpy()
+    class_names = val_loader.dataset.classes
+    
+    # 记录每个类别的准确率
+    for i, (name, acc) in enumerate(zip(class_names, class_acc)):
+        logger.info(f'{name}: {acc*100:.2f}%')
+    
+    # 返回包含类别准确率的字典
+    stats = metric_logger.get_stats()
+    stats['class_accuracy'] = zip(class_names, class_acc.tolist())
+    return stats
+
+
+    # return metric_logger.get_stats()

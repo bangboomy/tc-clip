@@ -136,4 +136,19 @@ ssv2:
     temporal_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_temporal18.txt
     static_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_static16.txt
 
-parse_ucf101: true
+ntu60:
+  dataset_name: ntu60
+  root: /root/autodl-tmp/RGB_videos/nturgb+d_rgb/
+  num_classes:
+    default: 60
+    base: 55
+    novel: 5
+  label_files:
+    default: labels/ntu60_labels.csv
+  ann_files:
+    train: /root/video_pre/ntu60_xview_train.txt
+    few_shot_train: /root/video_pre/ntu60_xview_4shot.txt
+    val: /root/video_pre/ntu60_xview_val.txt
+    # val: /root/video_pre/ntu60_xview_4shot.txt
+    
+parse_ucf101: false

@@ -179,7 +179,7 @@ def build_val_dataloader(logger, config, target_data_config):
     # Set worker seed
     if config.get('worker_init_fn', False):
         init_fn = partial(
-            worker_init_fn, num_workers=config.num_workers, rank=config.rank,
+            worker_init_fn, num_workers=config.num_workers, rank=dist.get_rank(),
             seed=config.seed) if config.seed is not None else None
     else:
         init_fn = None

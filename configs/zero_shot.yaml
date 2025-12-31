@@ -48,6 +48,8 @@ print_freq: 50
 final_test: true  # final testing with the best checkpoint after training
 early_stop: false # early stopping during training
 
+debug: true
+
 # others
 selected_option: ${hydra:runtime.choices} # selected defaults
 overriden_values: ${hydra:overrides}      # overrides with cli arguments

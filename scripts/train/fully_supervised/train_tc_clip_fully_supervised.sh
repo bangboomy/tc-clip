@@ -1,14 +1,14 @@
 # fully-supervised k400 training with 4 V100 gpus
-export CUDA_VISIBLE_DEVICES=0,1,2,3
-export GPUS_PER_NODE=4
+export CUDA_VISIBLE_DEVICES=0
+export GPUS_PER_NODE=1
 
 protocol=fully_supervised
-dataset_name=k400
+dataset_name=ntu60
 data=${protocol}_${dataset_name}
 
-expr_name=tc_clip_reproduce
-trainer=tc_clip
-use_wandb=true
+expr_name=vifi_clip_ntu60
+trainer=vifi_clip
+use_wandb=false
 
 torchrun --nproc_per_node=${GPUS_PER_NODE} main.py -cn ${protocol} \
 data=${data} \

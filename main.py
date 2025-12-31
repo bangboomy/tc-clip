@@ -13,7 +13,7 @@ import numpy as np
 import wandb
 import hydra
 from omegaconf import DictConfig, OmegaConf
-from apex import amp
+from torch.amp import autocast, GradScaler
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 
 from datasets.build import build_train_dataloader, build_val_dataloader
@@ -50,8 +50,7 @@ def main_training(logger, config):
     model = model.cuda()
     optimizer = build_optimizer(logger, config, model)
     lr_scheduler = build_scheduler(config, optimizer, len(train_loader))
-    if config.opt_level != 'O0':
-        model, optimizer = amp.initialize(models=model, optimizers=optimizer, opt_level=config.opt_level)
+    scaler = GradScaler() if config.opt_level != 'O0' else None
     model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[config.rank], broadcast_buffers=False,
                                                       find_unused_parameters=False)
 
@@ -138,6 +137,7 @@ def main_training(logger, config):
 
 
 def main_testing(logger, config, prefix='test'):
+    scaler = GradScaler() if config.opt_level != 'O0' else None
     if config.protocol == 'fully_supervised' and config.multi_view_inference:
         config.num_clip = 4
         config.num_crop = 3
@@ -168,9 +168,6 @@ def main_testing(logger, config, prefix='test'):
                 model, clip_model = returnCLIP(config, logger, class_names, return_clip_model=True)
                 model.cuda()
 
-                if config.opt_level != 'O0':
-                    model = amp.initialize(models=model, opt_level=config.opt_level)
-
                 model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[config.rank], broadcast_buffers=False,
                                                                   find_unused_parameters=False)
 
@@ -189,9 +186,6 @@ def main_testing(logger, config, prefix='test'):
             acc5_list.append(test_stats['acc5'])
             logger.info(f"Accuracy of the checkpoint on {colorstr(dataset_name)} test videos (size: {len(val_data)}): "
                         f"Acc@1 {test_stats['acc1']:.1f}, Acc@5 {test_stats['acc5']:.1f}")
-            del val_loader
-            del val_data
-            torch.cuda.empty_cache()
 
         if protocol == "avg_std":
             result_dict[name] = {'acc1_avg': np.mean(acc1_list), 'acc1_std': np.std(acc1_list),
