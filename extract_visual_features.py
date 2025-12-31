@@ -90,17 +90,16 @@ def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, 
             images = batch['imgs'].cuda(non_blocking=True)
             labels = batch['label']
 
-            # Get features from vision encoder
-            cls_tokens, context_tokens, _, _ = model.image_encoder(
-                images,
-                return_layer_num=[11],  # Get final layer
-                return_attention=False,
-                return_source=False
+            # Get features from vision encoder (ViFi-CLIP style)
+            # Ensure the input type matches the model weight type
+            model_dtype = next(model.image_encoder.parameters()).dtype
+            image_features, _ = model.image_encoder(
+                images.type(model_dtype),
+                return_attention=False
             )
 
-            # cls_tokens shape: [B, N_LAYERS, T, D]
-            # Take final layer features
-            features = cls_tokens[:, -1, :, :]  # [B, T, D]
+            # image_features shape: [B, T, D]
+            features = image_features  # [B, T, D]
 
             # Save features
             all_features.append(features.cpu())
