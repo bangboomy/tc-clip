@@ -121,7 +121,8 @@ def validate_with_features(val_loader, model, logger, config, features_path):
             logit_scale = model.module.logit_scale.exp()
             view_features_mean = view_features_mean.float()
             # 计算logits
-            logits = logit_scale * view_features_mean @ text_features.t()  # [b, n_cls]
+            with autocast('cuda', enabled=True):
+                logits = logit_scale * view_features_mean @ text_features.t()  # [b, n_cls]
 
             similarity = logits.softmax(dim=-1)
             tot_similarity += similarity
