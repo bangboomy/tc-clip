@@ -24,7 +24,7 @@ from utils.tools import epoch_saving, load_checkpoint, is_main, init_dist, get_d
 from utils.logger import create_logger
 from utils.print_utils import colorstr, print_configs
 
-from engine_with_features import validate_with_features
+from engine_with_features import validate_with_features, train_with_features
 
 
 @hydra.main(version_base=None, config_path="configs", config_name="fully_supervised")
@@ -97,7 +97,7 @@ def main(config: DictConfig) -> None:
     if config.eval == "test":
         main_testing_with_features(logger, config)
     else:
-        raise NotImplementedError("Only test mode is supported with pre-extracted features")
+        main_training_with_features(logger, config)
 
     if is_main():
         wandb.finish()
@@ -188,6 +188,44 @@ def main_testing_with_features(logger, config, prefix='test'):
 
     return
 
+
+def main_training_with_features(logger, config, prefix='test'):
+    # Check if features path is provided
+    if not hasattr(config, 'features_path') or config.features_path is None:
+        raise ValueError("features_path must be provided in the config when using pre-extracted features")
+
+    if config.protocol == 'fully_supervised' and config.multi_view_inference:
+        config.num_clip = 4
+        config.num_crop = 3
+    elif config.protocol == 'zero_shot' and config.multi_view_inference:
+        config.num_clip = 2
+
+    if config.num_clip != 1 or config.num_crop != 1:
+        logger.info(f"======== Testing with multi-view inference: "
+                    f"{config.num_frames}x{config.num_clip}x{config.num_crop} ========")
+    
+    model, clip_model = None, None
+
+    dataset_name = config.data.train.dataset_name
+    logger.info(f"======== Start evaluation on {colorstr(dataset_name)} with pre-extracted features =======")
+    
+    "------------ Build dataloader, model -----------"
+    train_data, train_loader, class_names = build_train_dataloader(logger, config)
+    
+    model, clip_model = returnCLIP(config, logger, class_names, return_clip_model=True)
+    model.cuda()
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[config.rank], broadcast_buffers=False,
+                                                                  find_unused_parameters=False)
+    
+    if config.resume:
+        epoch_loaded, max_accuray_loaded = load_checkpoint(config, model, None, None, logger, model_only=True)
+        logger.info(f"Loaded checkpoint at epoch {epoch_loaded} with max accuracy {max_accuray_loaded:.1f}")
+        
+    test_stats = train_with_features(train_loader, model, logger, config, config.features_path)
+    
+    "------------ Log results -----------"
+    logger.info(f"Accuracy of the checkpoint on {dataset_name} test videos: "
+        f"Acc@1 {test_stats['acc1']:.1f}, Acc@5 {test_stats['acc5']:.1f}\n")
 
 if __name__ == '__main__':
     main()
