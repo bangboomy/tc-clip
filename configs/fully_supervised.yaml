@@ -33,7 +33,7 @@ input_size: 224
 num_frames: 16
 num_clip: 1   # single view during training
 num_crop: 1
-multi_view_inference: true  # multi view during final testing
+multi_view_inference: false  # multi view during final testing
 
 # Run tools
 seed: 1024

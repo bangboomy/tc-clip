@@ -126,12 +126,12 @@ def extract_features(config: DictConfig, checkpoint_path: str, output_dir: str, 
     # If using distributed training, gather all features
     if config.distributed and config.rank == 0:
         logger.info("Gathering features from all processes...")
-        gather_features(output_path, config.world_size, logger)
+        gather_features(output_path, config.world_size, logger, data_type)
 
     return output_file
 
 
-def gather_features(output_path: Path, world_size: int, logger: logging.Logger):
+def gather_features(output_path: Path, world_size: int, logger: logging.Logger, data_type: str):
     """
     Gather features from all distributed processes.
 
@@ -145,7 +145,7 @@ def gather_features(output_path: Path, world_size: int, logger: logging.Logger):
     all_filenames = []
 
     for rank in range(world_size):
-        rank_file = output_path / f'features_rank{rank}.pth'
+        rank_file = output_path / f'{data_type}_features_rank{rank}.pth'
         if not rank_file.exists():
             logger.warning(f"Feature file for rank {rank} not found: {rank_file}")
             continue

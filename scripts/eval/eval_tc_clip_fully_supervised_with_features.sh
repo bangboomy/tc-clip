@@ -7,7 +7,7 @@ dataset_name=ntu60
 data=${protocol}_${dataset_name}
 resume=workspace/expr/fully_supervised_ntu60/vifi_clip_ntu60/fully_supervised_ntu60_vifi_clip_ntu60_vifi_clip/best.pth
 trainer=vifi_clip
-features_path=workspace/vifi_features/val_features_rank0.pth  # Path to pre-extracted features
+features_path=workspace/vifi_features/features_gathered.pth  # Path to pre-extracted features
 
 torchrun --nproc_per_node=${GPUS_PER_NODE} main_with_features.py -cn ${protocol} \
 data=${data} \

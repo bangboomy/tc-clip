@@ -1,0 +1,1412 @@
+[01-05 19:09:47 root] (extract_visual_features.py 208): INFO Config:
+aug:
+  label_smooth: 0.1
+  color_jitter: 0.8
+  gray_scale: 0.2
+  mixup: 0.8
+  cutmix: 1.0
+  mixup_switch_prob: 0.5
+shot: null
+base: null
+k400:
+  dataset_name: kinetics400
+  root: /YOUR/PATH/TO/DATASET/k400
+  num_classes:
+    default: 400
+    base: 200
+    novel: 200
+    temporal: 32
+    static: 32
+  label_files:
+    default: labels/kinetics_400_labels.csv
+    mini: labels/kinetics_400_mini200_labels.csv
+    base: labels/kinetics_400_base_labels.csv
+    novel: labels/kinetics_400_novel_labels.csv
+    temporal: labels/labels_temporal_static/kinetics_400_temporal32_labels.csv
+    static: labels/labels_temporal_static/kinetics_400_static32_labels.csv
+    llm: labels/labels_froster/kinetics_400_llm_labels.json
+    base_llm: labels/labels_froster/kinetics_400_base_llm_labels.json
+    novel_llm: labels/labels_froster/kinetics_400_novel_llm_labels.json
+  ann_files:
+    train: datasets_splits/k400_splits/train.txt
+    train_tiny: datasets_splits/k400_splits/train_tiny.txt
+    val: datasets_splits/k400_splits/val.txt
+    base_train: datasets_splits/base2novel_splits/k400_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/k400_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/k400_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/k400_splits/train_temporal32.txt
+    static_train: datasets_splits/temporal_static_splits/k400_splits/train_static32.txt
+    temporal_val: datasets_splits/temporal_static_splits/k400_splits/val_temporal32.txt
+    static_val: datasets_splits/temporal_static_splits/k400_splits/val_static32.txt
+    temporal_vis4: datasets_splits/temporal_static_splits/k400_splits/val_temporal32_vis4.txt
+    static_vis4: datasets_splits/temporal_static_splits/k400_splits/val_static32_vis4.txt
+k600:
+  dataset_name: kinetics600
+  root: /YOUR/PATH/TO/DATASET/k600
+  num_classes:
+    default: 160
+  label_files:
+    val1: labels/ZS_split1_K600.csv
+    val2: labels/ZS_split2_K600.csv
+    val3: labels/ZS_split3_K600.csv
+    val1_llm: labels/labels_froster/ZS_split1_K600_llm.json
+    val2_llm: labels/labels_froster/ZS_split2_K600_llm.json
+    val3_llm: labels/labels_froster/ZS_split3_K600_llm.json
+  ann_files:
+    val1: datasets_splits/k600_splits/ZS_split1_K600_eval.txt
+    val2: datasets_splits/k600_splits/ZS_split2_K600_eval.txt
+    val3: datasets_splits/k600_splits/ZS_split3_K600_eval.txt
+hmdb51:
+  dataset_name: hmdb51
+  root: /YOUR/PATH/TO/DATASET/hmdb51
+  num_classes:
+    default: 51
+    base: 26
+    novel: 25
+  label_files:
+    default: labels/hmdb_51_labels.csv
+    base: labels/hmdb_51_base_labels.csv
+    novel: labels/hmdb_51_novel_labels.csv
+    llm: labels/labels_froster/hmdb_51_llm_labels.json
+    base_llm: labels/labels_froster/hmdb_51_base_llm_labels.json
+    novel_llm: labels/labels_froster/hmdb_51_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/hmdb_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/hmdb_splits/val1.txt
+    val2: datasets_splits/hmdb_splits/val2.txt
+    val3: datasets_splits/hmdb_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/hmdb_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/hmdb_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/hmdb_splits/novel_val.txt
+ucf101:
+  dataset_name: ucf101
+  root: /YOUR/PATH/TO/DATASET/ucf101
+  num_classes:
+    default: 101
+    base: 51
+    novel: 50
+  label_files:
+    default: labels/ucf_101_labels.csv
+    base: labels/ucf_101_base_labels.csv
+    novel: labels/ucf_101_novel_labels.csv
+    llm: labels/labels_froster/ucf_101_llm_labels.json
+    base_llm: labels/labels_froster/ucf_101_base_llm_labels.json
+    novel_llm: labels/labels_froster/ucf_101_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/ucf_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/ucf_splits/val1.txt
+    val2: datasets_splits/ucf_splits/val2.txt
+    val3: datasets_splits/ucf_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/ucf_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ucf_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ucf_splits/novel_val.txt
+ssv2:
+  dataset_name: ssv2
+  root: /YOUR/PATH/TO/DATASET/ssv2
+  num_classes:
+    default: 174
+    base: 87
+    novel: 87
+    temporal: 18
+    static: 16
+  label_files:
+    default: labels/ssv2_labels.csv
+    base: labels/ssv2_174_base_labels.csv
+    novel: labels/ssv2_174_novel_labels.csv
+    temporal: labels/labels_temporal_static/ssv2_temporal18_labels.csv
+    static: labels/labels_temporal_static/ssv2_static16_labels.csv
+  ann_files:
+    train: datasets_splits/ssv2_splits/train.txt
+    few_shot_train: datasets_splits/ssv2_splits/train1_few_shot_${shot}.txt
+    val: datasets_splits/ssv2_splits/validation.txt
+    base_train: datasets_splits/base2novel_splits/ssv2_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ssv2_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ssv2_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/ssv2_splits/train_temporal18.txt
+    static_train: datasets_splits/temporal_static_splits/ssv2_splits/train_static16.txt
+    temporal_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_temporal18.txt
+    static_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_static16.txt
+ntu60:
+  dataset_name: ntu60
+  root: /root/autodl-tmp/RGB_videos/nturgb+d_rgb/
+  num_classes:
+    default: 60
+    base: 55
+    novel: 5
+  label_files:
+    default: labels/ntu60_labels.csv
+  ann_files:
+    train: /root/video_pre/ntu60_xview_train.txt
+    few_shot_train: /root/video_pre/ntu60_xview_4shot.txt
+    val: /root/video_pre/ntu60_xview_val.txt
+parse_ucf101: false
+data:
+  train:
+    dataset_name: ntu60_train
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.train}
+  val:
+    dataset_name: ntu60_val
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.val}
+  test:
+  - name: ntu60_val
+    protocol: top1
+    dataset_list:
+    - dataset_name: ntu60_val
+      root: ${ntu60.root}
+      num_classes: ${ntu60.num_classes.default}
+      label_file: ${ntu60.label_files.default}
+      ann_file: ${ntu60.ann_files.val}
+hydra/job_logging: disabled
+hydra/hydra_logging: disabled
+wandb_api_key: /YOUR/WANDB/API/KEY
+wandb_project: TC-CLIP
+wandb_logging_dir: /YOUR/PATH/TO/WANDB/OFFLINE/LOGGING/DIR
+wandb_tags:
+- ${protocol}
+- ${selected_option.data}
+- ${model_arch}
+optimizer: adamw
+betas:
+- 0.9
+- 0.98
+weight_decay: 0.001
+lr_scheduler: cosine
+trainer_name: ViFiCLIP
+vision_model: VisionTransformer
+vision_block: ResidualAttentionBlock
+text_block: ResidualAttentionBlock
+model_arch: ViT-B/16
+patch_size: 16
+freeze: null
+lr_10x: false
+n_ctx_vision: 0
+prompt_depth_vision: 0
+prompt_model: false
+ctx_init: a photo of a
+n_ctx_text: 0
+prompt_depth_text: 1
+context_length: 30
+zs_eval: false
+protocol: fully_supervised
+resume: workspace/expr/fully_supervised_ntu60/vifi_clip_ntu60/fully_supervised_ntu60_vifi_clip_ntu60_vifi_clip/best.pth
+output: ./workspace/vifi_features
+eval: null
+use_wandb: true
+epochs: 15
+warmup_epochs: 5
+lr: 2.2e-05
+lr_min: 2.2e-07
+total_batch_size: 256
+batch_size: 8
+accumulation_steps: 32
+test_batch_size: 8
+num_workers: 8
+pin_memory: true
+worker_init_fn: true
+input_size: 224
+num_frames: 16
+num_clip: 1
+num_crop: 1
+multi_view_inference: true
+seed: 1024
+distributed: true
+use_cudnn: true
+opt_level: O1
+auto_resume: false
+save_freq: 5
+save_intermediate: true
+print_freq: 50
+final_test: true
+early_stop: false
+selected_option: ${hydra:runtime.choices}
+overriden_values: ${hydra:overrides}
+extract_train: true
+
+[01-05 19:09:47 root] (extract_visual_features.py 52): INFO Building model...
+[01-05 19:09:47 root] (build_trainer.py 56): INFO Loading CLIP (backbone: ViT-B/16)
+[01-05 19:09:49 root] (build_trainer.py 59): INFO [34m[1mBuilding ViFiCLIP[0m
+[01-05 19:09:49 root] (build_trainer.py 97): INFO ----------------------------------------------------
+[01-05 19:09:49 root] (build_trainer.py 98): INFO Freezed Parameters
+[01-05 19:09:49 root] (build_trainer.py 102): INFO ----------------------------------------------------
+[01-05 19:09:49 root] (build_trainer.py 105): INFO Number of Parameters: 124.3M
+[01-05 19:09:49 root] (extract_visual_features.py 57): INFO Loading checkpoint from workspace/expr/fully_supervised_ntu60/vifi_clip_ntu60/fully_supervised_ntu60_vifi_clip_ntu60_vifi_clip/best.pth...
+[01-05 19:09:50 root] (extract_visual_features.py 73): INFO Building dataloader...
+[01-05 19:09:50 root] (build.py 75): INFO Building train dataloader
+[01-05 19:09:50 root] (extract_visual_features.py 83): INFO Extracting features...
+[01-05 19:47:44 root] (extract_visual_features.py 124): INFO Features saved to workspace/vifi_features/train_features_rank0.pth
+[01-05 19:47:44 root] (extract_visual_features.py 128): INFO Gathering features from all processes...
+[01-05 19:47:44 root] (extract_visual_features.py 150): WARNING Feature file for rank 0 not found: workspace/vifi_features/features_rank0.pth
+[01-05 19:49:30 root] (extract_visual_features.py 208): INFO Config:
+aug:
+  label_smooth: 0.1
+  color_jitter: 0.8
+  gray_scale: 0.2
+  mixup: 0.8
+  cutmix: 1.0
+  mixup_switch_prob: 0.5
+shot: null
+base: null
+k400:
+  dataset_name: kinetics400
+  root: /YOUR/PATH/TO/DATASET/k400
+  num_classes:
+    default: 400
+    base: 200
+    novel: 200
+    temporal: 32
+    static: 32
+  label_files:
+    default: labels/kinetics_400_labels.csv
+    mini: labels/kinetics_400_mini200_labels.csv
+    base: labels/kinetics_400_base_labels.csv
+    novel: labels/kinetics_400_novel_labels.csv
+    temporal: labels/labels_temporal_static/kinetics_400_temporal32_labels.csv
+    static: labels/labels_temporal_static/kinetics_400_static32_labels.csv
+    llm: labels/labels_froster/kinetics_400_llm_labels.json
+    base_llm: labels/labels_froster/kinetics_400_base_llm_labels.json
+    novel_llm: labels/labels_froster/kinetics_400_novel_llm_labels.json
+  ann_files:
+    train: datasets_splits/k400_splits/train.txt
+    train_tiny: datasets_splits/k400_splits/train_tiny.txt
+    val: datasets_splits/k400_splits/val.txt
+    base_train: datasets_splits/base2novel_splits/k400_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/k400_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/k400_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/k400_splits/train_temporal32.txt
+    static_train: datasets_splits/temporal_static_splits/k400_splits/train_static32.txt
+    temporal_val: datasets_splits/temporal_static_splits/k400_splits/val_temporal32.txt
+    static_val: datasets_splits/temporal_static_splits/k400_splits/val_static32.txt
+    temporal_vis4: datasets_splits/temporal_static_splits/k400_splits/val_temporal32_vis4.txt
+    static_vis4: datasets_splits/temporal_static_splits/k400_splits/val_static32_vis4.txt
+k600:
+  dataset_name: kinetics600
+  root: /YOUR/PATH/TO/DATASET/k600
+  num_classes:
+    default: 160
+  label_files:
+    val1: labels/ZS_split1_K600.csv
+    val2: labels/ZS_split2_K600.csv
+    val3: labels/ZS_split3_K600.csv
+    val1_llm: labels/labels_froster/ZS_split1_K600_llm.json
+    val2_llm: labels/labels_froster/ZS_split2_K600_llm.json
+    val3_llm: labels/labels_froster/ZS_split3_K600_llm.json
+  ann_files:
+    val1: datasets_splits/k600_splits/ZS_split1_K600_eval.txt
+    val2: datasets_splits/k600_splits/ZS_split2_K600_eval.txt
+    val3: datasets_splits/k600_splits/ZS_split3_K600_eval.txt
+hmdb51:
+  dataset_name: hmdb51
+  root: /YOUR/PATH/TO/DATASET/hmdb51
+  num_classes:
+    default: 51
+    base: 26
+    novel: 25
+  label_files:
+    default: labels/hmdb_51_labels.csv
+    base: labels/hmdb_51_base_labels.csv
+    novel: labels/hmdb_51_novel_labels.csv
+    llm: labels/labels_froster/hmdb_51_llm_labels.json
+    base_llm: labels/labels_froster/hmdb_51_base_llm_labels.json
+    novel_llm: labels/labels_froster/hmdb_51_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/hmdb_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/hmdb_splits/val1.txt
+    val2: datasets_splits/hmdb_splits/val2.txt
+    val3: datasets_splits/hmdb_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/hmdb_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/hmdb_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/hmdb_splits/novel_val.txt
+ucf101:
+  dataset_name: ucf101
+  root: /YOUR/PATH/TO/DATASET/ucf101
+  num_classes:
+    default: 101
+    base: 51
+    novel: 50
+  label_files:
+    default: labels/ucf_101_labels.csv
+    base: labels/ucf_101_base_labels.csv
+    novel: labels/ucf_101_novel_labels.csv
+    llm: labels/labels_froster/ucf_101_llm_labels.json
+    base_llm: labels/labels_froster/ucf_101_base_llm_labels.json
+    novel_llm: labels/labels_froster/ucf_101_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/ucf_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/ucf_splits/val1.txt
+    val2: datasets_splits/ucf_splits/val2.txt
+    val3: datasets_splits/ucf_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/ucf_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ucf_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ucf_splits/novel_val.txt
+ssv2:
+  dataset_name: ssv2
+  root: /YOUR/PATH/TO/DATASET/ssv2
+  num_classes:
+    default: 174
+    base: 87
+    novel: 87
+    temporal: 18
+    static: 16
+  label_files:
+    default: labels/ssv2_labels.csv
+    base: labels/ssv2_174_base_labels.csv
+    novel: labels/ssv2_174_novel_labels.csv
+    temporal: labels/labels_temporal_static/ssv2_temporal18_labels.csv
+    static: labels/labels_temporal_static/ssv2_static16_labels.csv
+  ann_files:
+    train: datasets_splits/ssv2_splits/train.txt
+    few_shot_train: datasets_splits/ssv2_splits/train1_few_shot_${shot}.txt
+    val: datasets_splits/ssv2_splits/validation.txt
+    base_train: datasets_splits/base2novel_splits/ssv2_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ssv2_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ssv2_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/ssv2_splits/train_temporal18.txt
+    static_train: datasets_splits/temporal_static_splits/ssv2_splits/train_static16.txt
+    temporal_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_temporal18.txt
+    static_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_static16.txt
+ntu60:
+  dataset_name: ntu60
+  root: /root/autodl-tmp/RGB_videos/nturgb+d_rgb/
+  num_classes:
+    default: 60
+    base: 55
+    novel: 5
+  label_files:
+    default: labels/ntu60_labels.csv
+  ann_files:
+    train: /root/video_pre/ntu60_xview_train.txt
+    few_shot_train: /root/video_pre/ntu60_xview_4shot.txt
+    val: /root/video_pre/ntu60_xview_val.txt
+parse_ucf101: false
+data:
+  train:
+    dataset_name: ntu60_train
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.train}
+  val:
+    dataset_name: ntu60_val
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.val}
+  test:
+  - name: ntu60_val
+    protocol: top1
+    dataset_list:
+    - dataset_name: ntu60_val
+      root: ${ntu60.root}
+      num_classes: ${ntu60.num_classes.default}
+      label_file: ${ntu60.label_files.default}
+      ann_file: ${ntu60.ann_files.val}
+hydra/job_logging: disabled
+hydra/hydra_logging: disabled
+wandb_api_key: /YOUR/WANDB/API/KEY
+wandb_project: TC-CLIP
+wandb_logging_dir: /YOUR/PATH/TO/WANDB/OFFLINE/LOGGING/DIR
+wandb_tags:
+- ${protocol}
+- ${selected_option.data}
+- ${model_arch}
+optimizer: adamw
+betas:
+- 0.9
+- 0.98
+weight_decay: 0.001
+lr_scheduler: cosine
+trainer_name: ViFiCLIP
+vision_model: VisionTransformer
+vision_block: ResidualAttentionBlock
+text_block: ResidualAttentionBlock
+model_arch: ViT-B/16
+patch_size: 16
+freeze: null
+lr_10x: false
+n_ctx_vision: 0
+prompt_depth_vision: 0
+prompt_model: false
+ctx_init: a photo of a
+n_ctx_text: 0
+prompt_depth_text: 1
+context_length: 30
+zs_eval: false
+protocol: fully_supervised
+resume: workspace/expr/fully_supervised_ntu60/vifi_clip_ntu60/fully_supervised_ntu60_vifi_clip_ntu60_vifi_clip/best.pth
+output: ./workspace/vifi_features
+eval: null
+use_wandb: true
+epochs: 15
+warmup_epochs: 5
+lr: 2.2e-05
+lr_min: 2.2e-07
+total_batch_size: 256
+batch_size: 8
+accumulation_steps: 32
+test_batch_size: 8
+num_workers: 8
+pin_memory: true
+worker_init_fn: true
+input_size: 224
+num_frames: 16
+num_clip: 1
+num_crop: 1
+multi_view_inference: true
+seed: 1024
+distributed: true
+use_cudnn: true
+opt_level: O1
+auto_resume: false
+save_freq: 5
+save_intermediate: true
+print_freq: 50
+final_test: true
+early_stop: false
+selected_option: ${hydra:runtime.choices}
+overriden_values: ${hydra:overrides}
+extract_train: true
+
+[01-05 19:50:19 root] (extract_visual_features.py 208): INFO Config:
+aug:
+  label_smooth: 0.1
+  color_jitter: 0.8
+  gray_scale: 0.2
+  mixup: 0.8
+  cutmix: 1.0
+  mixup_switch_prob: 0.5
+shot: null
+base: null
+k400:
+  dataset_name: kinetics400
+  root: /YOUR/PATH/TO/DATASET/k400
+  num_classes:
+    default: 400
+    base: 200
+    novel: 200
+    temporal: 32
+    static: 32
+  label_files:
+    default: labels/kinetics_400_labels.csv
+    mini: labels/kinetics_400_mini200_labels.csv
+    base: labels/kinetics_400_base_labels.csv
+    novel: labels/kinetics_400_novel_labels.csv
+    temporal: labels/labels_temporal_static/kinetics_400_temporal32_labels.csv
+    static: labels/labels_temporal_static/kinetics_400_static32_labels.csv
+    llm: labels/labels_froster/kinetics_400_llm_labels.json
+    base_llm: labels/labels_froster/kinetics_400_base_llm_labels.json
+    novel_llm: labels/labels_froster/kinetics_400_novel_llm_labels.json
+  ann_files:
+    train: datasets_splits/k400_splits/train.txt
+    train_tiny: datasets_splits/k400_splits/train_tiny.txt
+    val: datasets_splits/k400_splits/val.txt
+    base_train: datasets_splits/base2novel_splits/k400_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/k400_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/k400_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/k400_splits/train_temporal32.txt
+    static_train: datasets_splits/temporal_static_splits/k400_splits/train_static32.txt
+    temporal_val: datasets_splits/temporal_static_splits/k400_splits/val_temporal32.txt
+    static_val: datasets_splits/temporal_static_splits/k400_splits/val_static32.txt
+    temporal_vis4: datasets_splits/temporal_static_splits/k400_splits/val_temporal32_vis4.txt
+    static_vis4: datasets_splits/temporal_static_splits/k400_splits/val_static32_vis4.txt
+k600:
+  dataset_name: kinetics600
+  root: /YOUR/PATH/TO/DATASET/k600
+  num_classes:
+    default: 160
+  label_files:
+    val1: labels/ZS_split1_K600.csv
+    val2: labels/ZS_split2_K600.csv
+    val3: labels/ZS_split3_K600.csv
+    val1_llm: labels/labels_froster/ZS_split1_K600_llm.json
+    val2_llm: labels/labels_froster/ZS_split2_K600_llm.json
+    val3_llm: labels/labels_froster/ZS_split3_K600_llm.json
+  ann_files:
+    val1: datasets_splits/k600_splits/ZS_split1_K600_eval.txt
+    val2: datasets_splits/k600_splits/ZS_split2_K600_eval.txt
+    val3: datasets_splits/k600_splits/ZS_split3_K600_eval.txt
+hmdb51:
+  dataset_name: hmdb51
+  root: /YOUR/PATH/TO/DATASET/hmdb51
+  num_classes:
+    default: 51
+    base: 26
+    novel: 25
+  label_files:
+    default: labels/hmdb_51_labels.csv
+    base: labels/hmdb_51_base_labels.csv
+    novel: labels/hmdb_51_novel_labels.csv
+    llm: labels/labels_froster/hmdb_51_llm_labels.json
+    base_llm: labels/labels_froster/hmdb_51_base_llm_labels.json
+    novel_llm: labels/labels_froster/hmdb_51_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/hmdb_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/hmdb_splits/val1.txt
+    val2: datasets_splits/hmdb_splits/val2.txt
+    val3: datasets_splits/hmdb_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/hmdb_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/hmdb_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/hmdb_splits/novel_val.txt
+ucf101:
+  dataset_name: ucf101
+  root: /YOUR/PATH/TO/DATASET/ucf101
+  num_classes:
+    default: 101
+    base: 51
+    novel: 50
+  label_files:
+    default: labels/ucf_101_labels.csv
+    base: labels/ucf_101_base_labels.csv
+    novel: labels/ucf_101_novel_labels.csv
+    llm: labels/labels_froster/ucf_101_llm_labels.json
+    base_llm: labels/labels_froster/ucf_101_base_llm_labels.json
+    novel_llm: labels/labels_froster/ucf_101_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/ucf_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/ucf_splits/val1.txt
+    val2: datasets_splits/ucf_splits/val2.txt
+    val3: datasets_splits/ucf_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/ucf_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ucf_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ucf_splits/novel_val.txt
+ssv2:
+  dataset_name: ssv2
+  root: /YOUR/PATH/TO/DATASET/ssv2
+  num_classes:
+    default: 174
+    base: 87
+    novel: 87
+    temporal: 18
+    static: 16
+  label_files:
+    default: labels/ssv2_labels.csv
+    base: labels/ssv2_174_base_labels.csv
+    novel: labels/ssv2_174_novel_labels.csv
+    temporal: labels/labels_temporal_static/ssv2_temporal18_labels.csv
+    static: labels/labels_temporal_static/ssv2_static16_labels.csv
+  ann_files:
+    train: datasets_splits/ssv2_splits/train.txt
+    few_shot_train: datasets_splits/ssv2_splits/train1_few_shot_${shot}.txt
+    val: datasets_splits/ssv2_splits/validation.txt
+    base_train: datasets_splits/base2novel_splits/ssv2_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ssv2_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ssv2_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/ssv2_splits/train_temporal18.txt
+    static_train: datasets_splits/temporal_static_splits/ssv2_splits/train_static16.txt
+    temporal_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_temporal18.txt
+    static_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_static16.txt
+ntu60:
+  dataset_name: ntu60
+  root: /root/autodl-tmp/RGB_videos/nturgb+d_rgb/
+  num_classes:
+    default: 60
+    base: 55
+    novel: 5
+  label_files:
+    default: labels/ntu60_labels.csv
+  ann_files:
+    train: /root/video_pre/ntu60_xview_train.txt
+    few_shot_train: /root/video_pre/ntu60_xview_4shot.txt
+    val: /root/video_pre/ntu60_xview_val.txt
+parse_ucf101: false
+data:
+  train:
+    dataset_name: ntu60_train
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.train}
+  val:
+    dataset_name: ntu60_val
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.val}
+  test:
+  - name: ntu60_val
+    protocol: top1
+    dataset_list:
+    - dataset_name: ntu60_val
+      root: ${ntu60.root}
+      num_classes: ${ntu60.num_classes.default}
+      label_file: ${ntu60.label_files.default}
+      ann_file: ${ntu60.ann_files.val}
+hydra/job_logging: disabled
+hydra/hydra_logging: disabled
+wandb_api_key: /YOUR/WANDB/API/KEY
+wandb_project: TC-CLIP
+wandb_logging_dir: /YOUR/PATH/TO/WANDB/OFFLINE/LOGGING/DIR
+wandb_tags:
+- ${protocol}
+- ${selected_option.data}
+- ${model_arch}
+optimizer: adamw
+betas:
+- 0.9
+- 0.98
+weight_decay: 0.001
+lr_scheduler: cosine
+trainer_name: ViFiCLIP
+vision_model: VisionTransformer
+vision_block: ResidualAttentionBlock
+text_block: ResidualAttentionBlock
+model_arch: ViT-B/16
+patch_size: 16
+freeze: null
+lr_10x: false
+n_ctx_vision: 0
+prompt_depth_vision: 0
+prompt_model: false
+ctx_init: a photo of a
+n_ctx_text: 0
+prompt_depth_text: 1
+context_length: 30
+zs_eval: false
+protocol: fully_supervised
+resume: workspace/expr/fully_supervised_ntu60/vifi_clip_ntu60/fully_supervised_ntu60_vifi_clip_ntu60_vifi_clip/best.pth
+output: ./workspace/vifi_features
+eval: null
+use_wandb: true
+epochs: 15
+warmup_epochs: 5
+lr: 2.2e-05
+lr_min: 2.2e-07
+total_batch_size: 256
+batch_size: 8
+accumulation_steps: 32
+test_batch_size: 8
+num_workers: 8
+pin_memory: true
+worker_init_fn: true
+input_size: 224
+num_frames: 16
+num_clip: 1
+num_crop: 1
+multi_view_inference: true
+seed: 1024
+distributed: true
+use_cudnn: true
+opt_level: O1
+auto_resume: false
+save_freq: 5
+save_intermediate: true
+print_freq: 50
+final_test: true
+early_stop: false
+selected_option: ${hydra:runtime.choices}
+overriden_values: ${hydra:overrides}
+extract_train: true
+
+[01-05 19:51:31 root] (extract_visual_features.py 208): INFO Config:
+aug:
+  label_smooth: 0.1
+  color_jitter: 0.8
+  gray_scale: 0.2
+  mixup: 0.8
+  cutmix: 1.0
+  mixup_switch_prob: 0.5
+shot: null
+base: null
+k400:
+  dataset_name: kinetics400
+  root: /YOUR/PATH/TO/DATASET/k400
+  num_classes:
+    default: 400
+    base: 200
+    novel: 200
+    temporal: 32
+    static: 32
+  label_files:
+    default: labels/kinetics_400_labels.csv
+    mini: labels/kinetics_400_mini200_labels.csv
+    base: labels/kinetics_400_base_labels.csv
+    novel: labels/kinetics_400_novel_labels.csv
+    temporal: labels/labels_temporal_static/kinetics_400_temporal32_labels.csv
+    static: labels/labels_temporal_static/kinetics_400_static32_labels.csv
+    llm: labels/labels_froster/kinetics_400_llm_labels.json
+    base_llm: labels/labels_froster/kinetics_400_base_llm_labels.json
+    novel_llm: labels/labels_froster/kinetics_400_novel_llm_labels.json
+  ann_files:
+    train: datasets_splits/k400_splits/train.txt
+    train_tiny: datasets_splits/k400_splits/train_tiny.txt
+    val: datasets_splits/k400_splits/val.txt
+    base_train: datasets_splits/base2novel_splits/k400_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/k400_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/k400_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/k400_splits/train_temporal32.txt
+    static_train: datasets_splits/temporal_static_splits/k400_splits/train_static32.txt
+    temporal_val: datasets_splits/temporal_static_splits/k400_splits/val_temporal32.txt
+    static_val: datasets_splits/temporal_static_splits/k400_splits/val_static32.txt
+    temporal_vis4: datasets_splits/temporal_static_splits/k400_splits/val_temporal32_vis4.txt
+    static_vis4: datasets_splits/temporal_static_splits/k400_splits/val_static32_vis4.txt
+k600:
+  dataset_name: kinetics600
+  root: /YOUR/PATH/TO/DATASET/k600
+  num_classes:
+    default: 160
+  label_files:
+    val1: labels/ZS_split1_K600.csv
+    val2: labels/ZS_split2_K600.csv
+    val3: labels/ZS_split3_K600.csv
+    val1_llm: labels/labels_froster/ZS_split1_K600_llm.json
+    val2_llm: labels/labels_froster/ZS_split2_K600_llm.json
+    val3_llm: labels/labels_froster/ZS_split3_K600_llm.json
+  ann_files:
+    val1: datasets_splits/k600_splits/ZS_split1_K600_eval.txt
+    val2: datasets_splits/k600_splits/ZS_split2_K600_eval.txt
+    val3: datasets_splits/k600_splits/ZS_split3_K600_eval.txt
+hmdb51:
+  dataset_name: hmdb51
+  root: /YOUR/PATH/TO/DATASET/hmdb51
+  num_classes:
+    default: 51
+    base: 26
+    novel: 25
+  label_files:
+    default: labels/hmdb_51_labels.csv
+    base: labels/hmdb_51_base_labels.csv
+    novel: labels/hmdb_51_novel_labels.csv
+    llm: labels/labels_froster/hmdb_51_llm_labels.json
+    base_llm: labels/labels_froster/hmdb_51_base_llm_labels.json
+    novel_llm: labels/labels_froster/hmdb_51_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/hmdb_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/hmdb_splits/val1.txt
+    val2: datasets_splits/hmdb_splits/val2.txt
+    val3: datasets_splits/hmdb_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/hmdb_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/hmdb_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/hmdb_splits/novel_val.txt
+ucf101:
+  dataset_name: ucf101
+  root: /YOUR/PATH/TO/DATASET/ucf101
+  num_classes:
+    default: 101
+    base: 51
+    novel: 50
+  label_files:
+    default: labels/ucf_101_labels.csv
+    base: labels/ucf_101_base_labels.csv
+    novel: labels/ucf_101_novel_labels.csv
+    llm: labels/labels_froster/ucf_101_llm_labels.json
+    base_llm: labels/labels_froster/ucf_101_base_llm_labels.json
+    novel_llm: labels/labels_froster/ucf_101_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/ucf_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/ucf_splits/val1.txt
+    val2: datasets_splits/ucf_splits/val2.txt
+    val3: datasets_splits/ucf_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/ucf_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ucf_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ucf_splits/novel_val.txt
+ssv2:
+  dataset_name: ssv2
+  root: /YOUR/PATH/TO/DATASET/ssv2
+  num_classes:
+    default: 174
+    base: 87
+    novel: 87
+    temporal: 18
+    static: 16
+  label_files:
+    default: labels/ssv2_labels.csv
+    base: labels/ssv2_174_base_labels.csv
+    novel: labels/ssv2_174_novel_labels.csv
+    temporal: labels/labels_temporal_static/ssv2_temporal18_labels.csv
+    static: labels/labels_temporal_static/ssv2_static16_labels.csv
+  ann_files:
+    train: datasets_splits/ssv2_splits/train.txt
+    few_shot_train: datasets_splits/ssv2_splits/train1_few_shot_${shot}.txt
+    val: datasets_splits/ssv2_splits/validation.txt
+    base_train: datasets_splits/base2novel_splits/ssv2_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ssv2_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ssv2_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/ssv2_splits/train_temporal18.txt
+    static_train: datasets_splits/temporal_static_splits/ssv2_splits/train_static16.txt
+    temporal_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_temporal18.txt
+    static_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_static16.txt
+ntu60:
+  dataset_name: ntu60
+  root: /root/autodl-tmp/RGB_videos/nturgb+d_rgb/
+  num_classes:
+    default: 60
+    base: 55
+    novel: 5
+  label_files:
+    default: labels/ntu60_labels.csv
+  ann_files:
+    train: /root/video_pre/ntu60_xview_train.txt
+    few_shot_train: /root/video_pre/ntu60_xview_4shot.txt
+    val: /root/video_pre/ntu60_xview_val.txt
+parse_ucf101: false
+data:
+  train:
+    dataset_name: ntu60_train
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.train}
+  val:
+    dataset_name: ntu60_val
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.val}
+  test:
+  - name: ntu60_val
+    protocol: top1
+    dataset_list:
+    - dataset_name: ntu60_val
+      root: ${ntu60.root}
+      num_classes: ${ntu60.num_classes.default}
+      label_file: ${ntu60.label_files.default}
+      ann_file: ${ntu60.ann_files.val}
+hydra/job_logging: disabled
+hydra/hydra_logging: disabled
+wandb_api_key: /YOUR/WANDB/API/KEY
+wandb_project: TC-CLIP
+wandb_logging_dir: /YOUR/PATH/TO/WANDB/OFFLINE/LOGGING/DIR
+wandb_tags:
+- ${protocol}
+- ${selected_option.data}
+- ${model_arch}
+optimizer: adamw
+betas:
+- 0.9
+- 0.98
+weight_decay: 0.001
+lr_scheduler: cosine
+trainer_name: ViFiCLIP
+vision_model: VisionTransformer
+vision_block: ResidualAttentionBlock
+text_block: ResidualAttentionBlock
+model_arch: ViT-B/16
+patch_size: 16
+freeze: null
+lr_10x: false
+n_ctx_vision: 0
+prompt_depth_vision: 0
+prompt_model: false
+ctx_init: a photo of a
+n_ctx_text: 0
+prompt_depth_text: 1
+context_length: 30
+zs_eval: false
+protocol: fully_supervised
+resume: workspace/expr/fully_supervised_ntu60/vifi_clip_ntu60/fully_supervised_ntu60_vifi_clip_ntu60_vifi_clip/best.pth
+output: ./workspace/vifi_features
+eval: null
+use_wandb: true
+epochs: 15
+warmup_epochs: 5
+lr: 2.2e-05
+lr_min: 2.2e-07
+total_batch_size: 256
+batch_size: 8
+accumulation_steps: 32
+test_batch_size: 8
+num_workers: 8
+pin_memory: true
+worker_init_fn: true
+input_size: 224
+num_frames: 16
+num_clip: 1
+num_crop: 1
+multi_view_inference: true
+seed: 1024
+distributed: true
+use_cudnn: true
+opt_level: O1
+auto_resume: false
+save_freq: 5
+save_intermediate: true
+print_freq: 50
+final_test: true
+early_stop: false
+selected_option: ${hydra:runtime.choices}
+overriden_values: ${hydra:overrides}
+extract_train: true
+
+[01-05 19:51:31 root] (extract_visual_features.py 128): INFO Gathering features from all processes...
+[01-05 19:51:58 root] (extract_visual_features.py 208): INFO Config:
+aug:
+  label_smooth: 0.1
+  color_jitter: 0.8
+  gray_scale: 0.2
+  mixup: 0.8
+  cutmix: 1.0
+  mixup_switch_prob: 0.5
+shot: null
+base: null
+k400:
+  dataset_name: kinetics400
+  root: /YOUR/PATH/TO/DATASET/k400
+  num_classes:
+    default: 400
+    base: 200
+    novel: 200
+    temporal: 32
+    static: 32
+  label_files:
+    default: labels/kinetics_400_labels.csv
+    mini: labels/kinetics_400_mini200_labels.csv
+    base: labels/kinetics_400_base_labels.csv
+    novel: labels/kinetics_400_novel_labels.csv
+    temporal: labels/labels_temporal_static/kinetics_400_temporal32_labels.csv
+    static: labels/labels_temporal_static/kinetics_400_static32_labels.csv
+    llm: labels/labels_froster/kinetics_400_llm_labels.json
+    base_llm: labels/labels_froster/kinetics_400_base_llm_labels.json
+    novel_llm: labels/labels_froster/kinetics_400_novel_llm_labels.json
+  ann_files:
+    train: datasets_splits/k400_splits/train.txt
+    train_tiny: datasets_splits/k400_splits/train_tiny.txt
+    val: datasets_splits/k400_splits/val.txt
+    base_train: datasets_splits/base2novel_splits/k400_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/k400_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/k400_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/k400_splits/train_temporal32.txt
+    static_train: datasets_splits/temporal_static_splits/k400_splits/train_static32.txt
+    temporal_val: datasets_splits/temporal_static_splits/k400_splits/val_temporal32.txt
+    static_val: datasets_splits/temporal_static_splits/k400_splits/val_static32.txt
+    temporal_vis4: datasets_splits/temporal_static_splits/k400_splits/val_temporal32_vis4.txt
+    static_vis4: datasets_splits/temporal_static_splits/k400_splits/val_static32_vis4.txt
+k600:
+  dataset_name: kinetics600
+  root: /YOUR/PATH/TO/DATASET/k600
+  num_classes:
+    default: 160
+  label_files:
+    val1: labels/ZS_split1_K600.csv
+    val2: labels/ZS_split2_K600.csv
+    val3: labels/ZS_split3_K600.csv
+    val1_llm: labels/labels_froster/ZS_split1_K600_llm.json
+    val2_llm: labels/labels_froster/ZS_split2_K600_llm.json
+    val3_llm: labels/labels_froster/ZS_split3_K600_llm.json
+  ann_files:
+    val1: datasets_splits/k600_splits/ZS_split1_K600_eval.txt
+    val2: datasets_splits/k600_splits/ZS_split2_K600_eval.txt
+    val3: datasets_splits/k600_splits/ZS_split3_K600_eval.txt
+hmdb51:
+  dataset_name: hmdb51
+  root: /YOUR/PATH/TO/DATASET/hmdb51
+  num_classes:
+    default: 51
+    base: 26
+    novel: 25
+  label_files:
+    default: labels/hmdb_51_labels.csv
+    base: labels/hmdb_51_base_labels.csv
+    novel: labels/hmdb_51_novel_labels.csv
+    llm: labels/labels_froster/hmdb_51_llm_labels.json
+    base_llm: labels/labels_froster/hmdb_51_base_llm_labels.json
+    novel_llm: labels/labels_froster/hmdb_51_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/hmdb_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/hmdb_splits/val1.txt
+    val2: datasets_splits/hmdb_splits/val2.txt
+    val3: datasets_splits/hmdb_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/hmdb_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/hmdb_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/hmdb_splits/novel_val.txt
+ucf101:
+  dataset_name: ucf101
+  root: /YOUR/PATH/TO/DATASET/ucf101
+  num_classes:
+    default: 101
+    base: 51
+    novel: 50
+  label_files:
+    default: labels/ucf_101_labels.csv
+    base: labels/ucf_101_base_labels.csv
+    novel: labels/ucf_101_novel_labels.csv
+    llm: labels/labels_froster/ucf_101_llm_labels.json
+    base_llm: labels/labels_froster/ucf_101_base_llm_labels.json
+    novel_llm: labels/labels_froster/ucf_101_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/ucf_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/ucf_splits/val1.txt
+    val2: datasets_splits/ucf_splits/val2.txt
+    val3: datasets_splits/ucf_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/ucf_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ucf_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ucf_splits/novel_val.txt
+ssv2:
+  dataset_name: ssv2
+  root: /YOUR/PATH/TO/DATASET/ssv2
+  num_classes:
+    default: 174
+    base: 87
+    novel: 87
+    temporal: 18
+    static: 16
+  label_files:
+    default: labels/ssv2_labels.csv
+    base: labels/ssv2_174_base_labels.csv
+    novel: labels/ssv2_174_novel_labels.csv
+    temporal: labels/labels_temporal_static/ssv2_temporal18_labels.csv
+    static: labels/labels_temporal_static/ssv2_static16_labels.csv
+  ann_files:
+    train: datasets_splits/ssv2_splits/train.txt
+    few_shot_train: datasets_splits/ssv2_splits/train1_few_shot_${shot}.txt
+    val: datasets_splits/ssv2_splits/validation.txt
+    base_train: datasets_splits/base2novel_splits/ssv2_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ssv2_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ssv2_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/ssv2_splits/train_temporal18.txt
+    static_train: datasets_splits/temporal_static_splits/ssv2_splits/train_static16.txt
+    temporal_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_temporal18.txt
+    static_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_static16.txt
+ntu60:
+  dataset_name: ntu60
+  root: /root/autodl-tmp/RGB_videos/nturgb+d_rgb/
+  num_classes:
+    default: 60
+    base: 55
+    novel: 5
+  label_files:
+    default: labels/ntu60_labels.csv
+  ann_files:
+    train: /root/video_pre/ntu60_xview_train.txt
+    few_shot_train: /root/video_pre/ntu60_xview_4shot.txt
+    val: /root/video_pre/ntu60_xview_val.txt
+parse_ucf101: false
+data:
+  train:
+    dataset_name: ntu60_train
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.train}
+  val:
+    dataset_name: ntu60_val
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.val}
+  test:
+  - name: ntu60_val
+    protocol: top1
+    dataset_list:
+    - dataset_name: ntu60_val
+      root: ${ntu60.root}
+      num_classes: ${ntu60.num_classes.default}
+      label_file: ${ntu60.label_files.default}
+      ann_file: ${ntu60.ann_files.val}
+hydra/job_logging: disabled
+hydra/hydra_logging: disabled
+wandb_api_key: /YOUR/WANDB/API/KEY
+wandb_project: TC-CLIP
+wandb_logging_dir: /YOUR/PATH/TO/WANDB/OFFLINE/LOGGING/DIR
+wandb_tags:
+- ${protocol}
+- ${selected_option.data}
+- ${model_arch}
+optimizer: adamw
+betas:
+- 0.9
+- 0.98
+weight_decay: 0.001
+lr_scheduler: cosine
+trainer_name: ViFiCLIP
+vision_model: VisionTransformer
+vision_block: ResidualAttentionBlock
+text_block: ResidualAttentionBlock
+model_arch: ViT-B/16
+patch_size: 16
+freeze: null
+lr_10x: false
+n_ctx_vision: 0
+prompt_depth_vision: 0
+prompt_model: false
+ctx_init: a photo of a
+n_ctx_text: 0
+prompt_depth_text: 1
+context_length: 30
+zs_eval: false
+protocol: fully_supervised
+resume: workspace/expr/fully_supervised_ntu60/vifi_clip_ntu60/fully_supervised_ntu60_vifi_clip_ntu60_vifi_clip/best.pth
+output: ./workspace/vifi_features
+eval: null
+use_wandb: true
+epochs: 15
+warmup_epochs: 5
+lr: 2.2e-05
+lr_min: 2.2e-07
+total_batch_size: 256
+batch_size: 8
+accumulation_steps: 32
+test_batch_size: 8
+num_workers: 8
+pin_memory: true
+worker_init_fn: true
+input_size: 224
+num_frames: 16
+num_clip: 1
+num_crop: 1
+multi_view_inference: true
+seed: 1024
+distributed: true
+use_cudnn: true
+opt_level: O1
+auto_resume: false
+save_freq: 5
+save_intermediate: true
+print_freq: 50
+final_test: true
+early_stop: false
+selected_option: ${hydra:runtime.choices}
+overriden_values: ${hydra:overrides}
+extract_train: true
+
+[01-05 19:51:59 root] (extract_visual_features.py 128): INFO Gathering features from all processes...
+[01-05 19:52:01 root] (extract_visual_features.py 173): INFO Gathered features saved to workspace/vifi_features/features_gathered.pth
+[01-05 19:52:01 root] (extract_visual_features.py 185): INFO Feature metadata: {'num_samples': 37640, 'feature_shape': [37640, 16, 512], 'num_classes': 60}
+[01-05 20:06:23 root] (extract_visual_features.py 208): INFO Config:
+aug:
+  label_smooth: 0.1
+  color_jitter: 0.8
+  gray_scale: 0.2
+  mixup: 0.8
+  cutmix: 1.0
+  mixup_switch_prob: 0.5
+shot: null
+base: null
+k400:
+  dataset_name: kinetics400
+  root: /YOUR/PATH/TO/DATASET/k400
+  num_classes:
+    default: 400
+    base: 200
+    novel: 200
+    temporal: 32
+    static: 32
+  label_files:
+    default: labels/kinetics_400_labels.csv
+    mini: labels/kinetics_400_mini200_labels.csv
+    base: labels/kinetics_400_base_labels.csv
+    novel: labels/kinetics_400_novel_labels.csv
+    temporal: labels/labels_temporal_static/kinetics_400_temporal32_labels.csv
+    static: labels/labels_temporal_static/kinetics_400_static32_labels.csv
+    llm: labels/labels_froster/kinetics_400_llm_labels.json
+    base_llm: labels/labels_froster/kinetics_400_base_llm_labels.json
+    novel_llm: labels/labels_froster/kinetics_400_novel_llm_labels.json
+  ann_files:
+    train: datasets_splits/k400_splits/train.txt
+    train_tiny: datasets_splits/k400_splits/train_tiny.txt
+    val: datasets_splits/k400_splits/val.txt
+    base_train: datasets_splits/base2novel_splits/k400_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/k400_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/k400_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/k400_splits/train_temporal32.txt
+    static_train: datasets_splits/temporal_static_splits/k400_splits/train_static32.txt
+    temporal_val: datasets_splits/temporal_static_splits/k400_splits/val_temporal32.txt
+    static_val: datasets_splits/temporal_static_splits/k400_splits/val_static32.txt
+    temporal_vis4: datasets_splits/temporal_static_splits/k400_splits/val_temporal32_vis4.txt
+    static_vis4: datasets_splits/temporal_static_splits/k400_splits/val_static32_vis4.txt
+k600:
+  dataset_name: kinetics600
+  root: /YOUR/PATH/TO/DATASET/k600
+  num_classes:
+    default: 160
+  label_files:
+    val1: labels/ZS_split1_K600.csv
+    val2: labels/ZS_split2_K600.csv
+    val3: labels/ZS_split3_K600.csv
+    val1_llm: labels/labels_froster/ZS_split1_K600_llm.json
+    val2_llm: labels/labels_froster/ZS_split2_K600_llm.json
+    val3_llm: labels/labels_froster/ZS_split3_K600_llm.json
+  ann_files:
+    val1: datasets_splits/k600_splits/ZS_split1_K600_eval.txt
+    val2: datasets_splits/k600_splits/ZS_split2_K600_eval.txt
+    val3: datasets_splits/k600_splits/ZS_split3_K600_eval.txt
+hmdb51:
+  dataset_name: hmdb51
+  root: /YOUR/PATH/TO/DATASET/hmdb51
+  num_classes:
+    default: 51
+    base: 26
+    novel: 25
+  label_files:
+    default: labels/hmdb_51_labels.csv
+    base: labels/hmdb_51_base_labels.csv
+    novel: labels/hmdb_51_novel_labels.csv
+    llm: labels/labels_froster/hmdb_51_llm_labels.json
+    base_llm: labels/labels_froster/hmdb_51_base_llm_labels.json
+    novel_llm: labels/labels_froster/hmdb_51_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/hmdb_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/hmdb_splits/val1.txt
+    val2: datasets_splits/hmdb_splits/val2.txt
+    val3: datasets_splits/hmdb_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/hmdb_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/hmdb_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/hmdb_splits/novel_val.txt
+ucf101:
+  dataset_name: ucf101
+  root: /YOUR/PATH/TO/DATASET/ucf101
+  num_classes:
+    default: 101
+    base: 51
+    novel: 50
+  label_files:
+    default: labels/ucf_101_labels.csv
+    base: labels/ucf_101_base_labels.csv
+    novel: labels/ucf_101_novel_labels.csv
+    llm: labels/labels_froster/ucf_101_llm_labels.json
+    base_llm: labels/labels_froster/ucf_101_base_llm_labels.json
+    novel_llm: labels/labels_froster/ucf_101_novel_llm_labels.json
+  ann_files:
+    few_shot_train: datasets_splits/ucf_splits/train1_few_shot_${shot}.txt
+    val1: datasets_splits/ucf_splits/val1.txt
+    val2: datasets_splits/ucf_splits/val2.txt
+    val3: datasets_splits/ucf_splits/val3.txt
+    base_train: datasets_splits/base2novel_splits/ucf_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ucf_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ucf_splits/novel_val.txt
+ssv2:
+  dataset_name: ssv2
+  root: /YOUR/PATH/TO/DATASET/ssv2
+  num_classes:
+    default: 174
+    base: 87
+    novel: 87
+    temporal: 18
+    static: 16
+  label_files:
+    default: labels/ssv2_labels.csv
+    base: labels/ssv2_174_base_labels.csv
+    novel: labels/ssv2_174_novel_labels.csv
+    temporal: labels/labels_temporal_static/ssv2_temporal18_labels.csv
+    static: labels/labels_temporal_static/ssv2_static16_labels.csv
+  ann_files:
+    train: datasets_splits/ssv2_splits/train.txt
+    few_shot_train: datasets_splits/ssv2_splits/train1_few_shot_${shot}.txt
+    val: datasets_splits/ssv2_splits/validation.txt
+    base_train: datasets_splits/base2novel_splits/ssv2_splits/fs_base_s${base}_train.txt
+    base_val: datasets_splits/base2novel_splits/ssv2_splits/base_val.txt
+    novel_val: datasets_splits/base2novel_splits/ssv2_splits/novel_val.txt
+    temporal_train: datasets_splits/temporal_static_splits/ssv2_splits/train_temporal18.txt
+    static_train: datasets_splits/temporal_static_splits/ssv2_splits/train_static16.txt
+    temporal_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_temporal18.txt
+    static_val: datasets_splits/temporal_static_splits/ssv2_splits/validation_static16.txt
+ntu60:
+  dataset_name: ntu60
+  root: /root/autodl-tmp/RGB_videos/nturgb+d_rgb/
+  num_classes:
+    default: 60
+    base: 55
+    novel: 5
+  label_files:
+    default: labels/ntu60_labels.csv
+  ann_files:
+    train: /root/video_pre/ntu60_xview_train.txt
+    few_shot_train: /root/video_pre/ntu60_xview_4shot.txt
+    val: /root/video_pre/ntu60_xview_val.txt
+parse_ucf101: false
+data:
+  train:
+    dataset_name: ntu60_train
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.train}
+  val:
+    dataset_name: ntu60_val
+    root: ${ntu60.root}
+    num_classes: ${ntu60.num_classes.default}
+    label_file: ${ntu60.label_files.default}
+    ann_file: ${ntu60.ann_files.val}
+  test:
+  - name: ntu60_val
+    protocol: top1
+    dataset_list:
+    - dataset_name: ntu60_val
+      root: ${ntu60.root}
+      num_classes: ${ntu60.num_classes.default}
+      label_file: ${ntu60.label_files.default}
+      ann_file: ${ntu60.ann_files.val}
+hydra/job_logging: disabled
+hydra/hydra_logging: disabled
+wandb_api_key: /YOUR/WANDB/API/KEY
+wandb_project: TC-CLIP
+wandb_logging_dir: /YOUR/PATH/TO/WANDB/OFFLINE/LOGGING/DIR
+wandb_tags:
+- ${protocol}
+- ${selected_option.data}
+- ${model_arch}
+optimizer: adamw
+betas:
+- 0.9
+- 0.98
+weight_decay: 0.001
+lr_scheduler: cosine
+trainer_name: ViFiCLIP
+vision_model: VisionTransformer
+vision_block: ResidualAttentionBlock
+text_block: ResidualAttentionBlock
+model_arch: ViT-B/16
+patch_size: 16
+freeze: null
+lr_10x: false
+n_ctx_vision: 0
+prompt_depth_vision: 0
+prompt_model: false
+ctx_init: a photo of a
+n_ctx_text: 0
+prompt_depth_text: 1
+context_length: 30
+zs_eval: false
+protocol: fully_supervised
+resume: workspace/expr/fully_supervised_ntu60/vifi_clip_ntu60/fully_supervised_ntu60_vifi_clip_ntu60_vifi_clip/best.pth
+output: ./workspace/vifi_features
+eval: null
+use_wandb: true
+epochs: 15
+warmup_epochs: 5
+lr: 2.2e-05
+lr_min: 2.2e-07
+total_batch_size: 256
+batch_size: 8
+accumulation_steps: 32
+test_batch_size: 8
+num_workers: 8
+pin_memory: true
+worker_init_fn: true
+input_size: 224
+num_frames: 16
+num_clip: 1
+num_crop: 1
+multi_view_inference: true
+seed: 1024
+distributed: true
+use_cudnn: true
+opt_level: O1
+auto_resume: false
+save_freq: 5
+save_intermediate: true
+print_freq: 50
+final_test: true
+early_stop: false
+selected_option: ${hydra:runtime.choices}
+overriden_values: ${hydra:overrides}
+
+[01-05 20:06:23 root] (extract_visual_features.py 52): INFO Building model...
+[01-05 20:06:23 root] (build_trainer.py 56): INFO Loading CLIP (backbone: ViT-B/16)
+[01-05 20:06:25 root] (build_trainer.py 59): INFO [34m[1mBuilding ViFiCLIP[0m
+[01-05 20:06:25 root] (build_trainer.py 97): INFO ----------------------------------------------------
+[01-05 20:06:25 root] (build_trainer.py 98): INFO Freezed Parameters
+[01-05 20:06:25 root] (build_trainer.py 102): INFO ----------------------------------------------------
+[01-05 20:06:25 root] (build_trainer.py 105): INFO Number of Parameters: 124.3M
+[01-05 20:06:25 root] (extract_visual_features.py 57): INFO Loading checkpoint from workspace/expr/fully_supervised_ntu60/vifi_clip_ntu60/fully_supervised_ntu60_vifi_clip_ntu60_vifi_clip/best.pth...
+[01-05 20:06:26 root] (extract_visual_features.py 73): INFO Building dataloader...
+[01-05 20:06:26 root] (build.py 144): INFO Building val dataloader
+[01-05 20:06:26 root] (extract_visual_features.py 83): INFO Extracting features...
+[01-05 20:22:36 root] (extract_visual_features.py 124): INFO Features saved to workspace/vifi_features/val_features_rank0.pth
+[01-05 20:22:36 root] (extract_visual_features.py 128): INFO Gathering features from all processes...
+[01-05 20:22:38 root] (extract_visual_features.py 173): INFO Gathered features saved to workspace/vifi_features/features_gathered.pth
+[01-05 20:22:38 root] (extract_visual_features.py 185): INFO Feature metadata: {'num_samples': 18932, 'feature_shape': [18932, 16, 512], 'num_classes': 60}
